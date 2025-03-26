@@ -1,10 +1,12 @@
+"use server";
 import { db } from "@/lib/prisma";
 import { createClient } from "@/lib/Supabase";
+import { auth } from "@clerk/nextjs/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { revalidatePath } from "next/cache";
 
 import { cookies } from "next/headers";
-import uuidv4 from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 async function convertfilebs64(file) {
     const bytes = await file.arrayBuffer();
@@ -121,6 +123,7 @@ export async function ProcesscarwithAI(file) {
 
 
 export async function Addcar({ carData, images }) {
+    console.log("Car Data", carData, images);
     try {
         const { userId } = await auth()
         if (!userId) throw new Error("Unauthorized")
@@ -151,14 +154,14 @@ export async function Addcar({ carData, images }) {
             const base64 = convertfilebs64.split(",")[1];
             const imagebuffer = Buffer.from(base64, "base64");
 
-            const mimetype = base64.match(/data:image\/([a-zA-Z0-9]+);/);
-            const filetype = mimetype ? mimetype[1] : "png";
+            const mimetype = convertfilebs64.match(/data:image\/([a-zA-Z0-9]+);/);
+            const filetype = mimetype ? mimetype[1] : ".png";
 
             const filename = `image-${Date.now()}-${i}.${filetype}`;
             const filepath = `${folderpath}/${filename}`;
 
             const { data, error } = await supabase.storage
-                .from("car-images")
+                .from("iconcars")
                 .upload(filepath, imagebuffer, {
                     contentType: `image/${mimetype}`,
 
@@ -169,7 +172,7 @@ export async function Addcar({ carData, images }) {
                 throw new Error("Error uploading image");
             }
 
-            const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/car-images/${filepath}`;
+            const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/iconcars/${filepath}`;
 
             imageUrls.push(publicUrl);
         }
@@ -187,18 +190,27 @@ export async function Addcar({ carData, images }) {
                 price: carData.price,
                 mileage: carData.mileage,
                 color: carData.color,
-                bodyType: carData.bodyType,
                 fuelType: carData.fuelType,
-                transmission: carData.transmissionType,
-                description: carData.description,
+                transmission: carData.transmission,
+                bodyType: carData.bodyType,
                 images: imageUrls,
+                seats: carData.seats,
+                status: carData.status,
+                featured: carData.featured,
+                description: carData.description,
             }
         })
+
+        const serializedCar = {
+            ...car,
+            price: car.price.toNumber(),
+
+        };
 
         revalidatePath("/admin/cars");
         return {
             success: true,
-            car: car,
+            car: serializedCar,
         }
 
     } catch (error) {

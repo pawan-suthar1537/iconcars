@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,6 +28,9 @@ import { toast } from "sonner";
 import { Loader2, Loader2Icon, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import useFetch from "@/hooks/use-fetch";
+import { Addcar } from "@/actions/cars";
+import { useRouter } from "next/navigation";
 
 // Predefined options
 const fuelTypes = ["Petrol", "Diesel", "Electric", "Hybrid", "Plug-in Hybrid"];
@@ -44,6 +47,7 @@ const bodyTypes = [
 const carStatuses = ["AVAILABLE", "UNAVAILABLE", "SOLD"];
 
 const Addcarform = () => {
+  const router = useRouter();
   const [activetab, setactivetab] = useState("ai");
   const [uploadimages, setuploadimages] = useState([]);
   const [imageerror, setimageerror] = useState("");
@@ -134,11 +138,37 @@ const Addcarform = () => {
     },
   });
 
+  const {
+    data: addcarres,
+    loading: addcarloading,
+    fn: addcarfn,
+  } = useFetch(Addcar);
+
+  useEffect(() => {
+    if (addcarres?.success) {
+      toast.success("car added successfully");
+      router.push("/admin/cars");
+    }
+  }, [addcarres, addcarloading]);
   const onSubmit = async (data) => {
     if (uploadimages.length === 0) {
       setimageerror("please upload at least one image");
       return;
     }
+
+    console.log("add car data", data);
+    const carDataa = {
+      ...data,
+      year: parseInt(data.year),
+      price: parseFloat(data.price),
+      mileage: parseInt(data.mileage),
+      seats: data.seats ? parseInt(data.seats) : null,
+    };
+
+    await addcarfn({
+      carData: carDataa,
+      images: uploadimages,
+    });
   };
 
   const removeimage = async (index) => {
@@ -495,9 +525,9 @@ const Addcarform = () => {
                   <Button
                     type="submit"
                     className="w-full md:w-auto"
-                    disabled={true}
+                    disabled={addcarloading}
                   >
-                    {true ? (
+                    {addcarloading ? (
                       <>
                         {" "}
                         <Loader2 className="mr-1 h-4 w-4  animate-spin" />{" "}
