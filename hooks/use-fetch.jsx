@@ -3,7 +3,7 @@ import { toast } from "sonner";
 
 const useFetch = (cb) => {
   const [data, setdata] = useState(undefined);
-  const [loading, setloading] = useState(null);
+  const [loading, setloading] = useState(false);
   const [error, seterror] = useState(null);
 
   const fn = async (...args) => {

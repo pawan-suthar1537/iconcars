@@ -15,8 +15,8 @@ async function convertfilebs64(file) {
 }
 
 
-
 export async function ProcesscarwithAI(file) {
+    console.log("Processing car image with AI file", file);
     try {
         if (!process.env.GEMENI_API_KEY) {
             throw new Error("GEMINI_API_KEY is not set");
@@ -24,7 +24,7 @@ export async function ProcesscarwithAI(file) {
 
         const genai = new GoogleGenerativeAI(process.env.GEMENI_API_KEY);
         const model = await genai.getGenerativeModel({
-            model: "gemini-5.1-flash",
+            model: "gemini-1.5-flash",
         });
 
         const base64 = await convertfilebs64(file);
@@ -32,7 +32,7 @@ export async function ProcesscarwithAI(file) {
         const imagePart = {
             inlineData: {
                 data: base64,
-                mimeType: file.type,
+                mimeType: file.type || "image/jpeg",
             },
 
         }
@@ -40,13 +40,19 @@ export async function ProcesscarwithAI(file) {
         Analyze this car image and extract this foloowing information:
         1. Make(manufacturer)
         2.Model
-        3. Year (apporximately)
+        3. Year (apporximately in YYYY format)
         4.Color
-        5.BodyType (suv,sedan,hatchback, etc)
-        6. mileage (apporximately)
-        7. fule type (petrol, diesel, electric, hybrid)
-        8.transmission type (manual, automatic)
-        9. price (YOur best guess)
+        5.BodyType ("SUV",
+  "Sedan",
+  "Hatchback",
+  "Convertible",
+  "Coupe",
+  "Wagon",
+  "Pickup",)
+        6. mileage (apporximately in km or miles)
+        7. fule type ("Petrol", "Diesel", "Electric", "Hybrid", "Plug-in Hybrid")
+        8.transmission type (Automatic", "Manual", "Semi-Automatic")
+        9. price (YOur best guess and give a number not in range)
         10.short description of the car
 
         format YOur Response in JSON format with the following
@@ -59,9 +65,12 @@ export async function ProcesscarwithAI(file) {
             "mileage": "mileage",
             "bodyType": "bodyType",
             "fuelType": "fuelType",
-            transmissionType: "transmissionType",
+            transmission: "transmission",
             "description": "description",
             confidence: "0.00"
+
+
+            
         }
 
         for the confidence, use 0.00 to 1 represent the confidence level of the model
@@ -73,7 +82,11 @@ export async function ProcesscarwithAI(file) {
         const result = await model.generateContent([imagePart, Prompt])
         const response = await result.response;
         const text = await response.text();
-        const cleantext = text.replace(/```(?:json )?\n?/g, "").trim();
+        console.log("Raw API response:", text);
+        const cleantext = text
+            .replace(/```json\s*|```|\bjson\b\s*/g, "")
+            .trim();
+        console.log("Cleaned API response:", cleantext); // Debug: After cleaning
 
 
         try {
@@ -88,7 +101,7 @@ export async function ProcesscarwithAI(file) {
                 "mileage",
                 "bodyType",
                 "fuelType",
-                "transmissionType",
+                "transmission",
                 "description",
                 "confidence"
 
@@ -105,22 +118,18 @@ export async function ProcesscarwithAI(file) {
             }
 
         } catch (error) {
-            return {
-                success: false,
-                error: "Invalid JSON format",
-
-            }
+            console.error("JSON parsing error:", error.message, "Cleantext was:", cleantext);
+            return { success: false, error: "Invalid JSON format" };
 
         }
 
     } catch (error) {
 
-        throw new Error("Error processing image with AI" + error.message);
+        throw new Error("Error processing image with AI " + error.message);
 
     }
 
 }
-
 
 export async function Addcar({ carData, images }) {
     console.log("Car Data", carData, images);
@@ -188,7 +197,7 @@ export async function Addcar({ carData, images }) {
                 model: carData.model,
                 year: carData.year,
                 price: carData.price,
-                mileage: carData.mileage,
+                mileage: carData.mileage || 0,
                 color: carData.color,
                 fuelType: carData.fuelType,
                 transmission: carData.transmission,
