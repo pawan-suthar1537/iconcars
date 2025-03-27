@@ -1,4 +1,5 @@
 "use server";
+import { serializeCarData } from "@/lib/helper";
 import { db } from "@/lib/prisma";
 import { createClient } from "@/lib/Supabase";
 import { auth } from "@clerk/nextjs/server";
@@ -227,4 +228,159 @@ export async function Addcar({ carData, images }) {
 
     }
 
+}
+
+export async function getallCars(search = "") {
+    try {
+        const { userId } = await auth()
+        if (!userId) throw new Error("Unauthorized")
+
+        const user = await db.User.findUnique({
+            where: { clerkUserId: userId },
+
+        })
+        if (!user) {
+            return { authorised: false, reason: "not-admin" }
+        }
+
+        let where = {}
+        if (search) {
+            where.OR = [
+                { make: { contains: search, mode: "insensitive" } },
+                { model: { contains: search, mode: "insensitive" } },
+                { color: { contains: search, mode: "insensitive" } },
+            ]
+        }
+
+        const cars = await db.Car.findMany({
+            where,
+            orderBy: {
+                createdAt: "desc",
+            },
+        })
+        const serializeddata = cars.map(serializeCarData)
+        return {
+            success: true,
+            data: serializeddata,
+        }
+    } catch (error) {
+        console.error("Error fetching cars:", error);
+        return {
+            success: false,
+            error: "Error fetching cars",
+        };
+
+    }
+}
+
+
+export async function DeleteCar(carId) {
+    try {
+        const { userId } = await auth()
+        if (!userId) throw new Error("Unauthorized")
+
+        const user = await db.User.findUnique({
+            where: { clerkUserId: userId },
+
+        })
+        if (!user) {
+            return { authorised: false, reason: "not-admin" }
+        }
+
+        const car = await db.Car.findUnique({
+            where: { id: carId },
+            select: { images: true }
+
+        })
+        if (!car) {
+            return { success: false, error: "Car not found" }
+        }
+        await db.Car.delete({
+            where: { id: carId },
+        })
+        try {
+            const cookieStore = await cookies()
+            const supabase = createClient(cookieStore)
+
+            const filepaths = car.images.map((imgurl) => {
+                const url = new URL(imgurl)
+                const path = url.pathname.match(/\/iconcars\/(.*)/)
+                return path ? path[1] : null
+            }).filter(Boolean)
+
+            if (filepaths.length > 0) {
+                const { error } = await supabase.storage.from("iconcars").remove(filepaths)
+            }
+            if (error) {
+                console.error("Error deleting images from Supabase:", error);
+
+            }
+
+        } catch (storagerror) {
+            console.error("Error deleting car:", storagerror);
+            return {
+                success: false,
+                error: "Error deleting car",
+            };
+
+        }
+        revalidatePath("/admin/cars")
+        return {
+            success: true,
+            message: "Car deleted successfully",
+        }
+
+    } catch (error) {
+        console.error("Error deleting car:", error);
+        return {
+            success: false,
+            error: "Error deleting car",
+        };
+
+    }
+}
+
+
+export async function UpdateCar(carId, { status, featured }) {
+    try {
+        const { userId } = await auth()
+        if (!userId) throw new Error("Unauthorized")
+
+        const user = await db.User.findUnique({
+            where: { clerkUserId: userId },
+
+        })
+        if (!user) {
+            return { authorised: false, reason: "not-admin" }
+        }
+
+        const updatedData = {}
+        if (status !== undefined) updatedData.status = status
+        if (featured !== undefined) updatedData.featured = featured
+
+
+        const car = await db.Car.update({
+            where: { id: carId },
+            data: updatedData,
+        })
+
+        const serializedCar = {
+            ...car,
+            price: car.price.toNumber(),
+
+        };
+        revalidatePath("/admin/cars")
+        return {
+            success: true,
+            car: serializedCar,
+        }
+
+    } catch (error) {
+        console.error("Error updating car:", error);
+        return {
+            success: false,
+            error: "Error updating car",
+        };
+
+    }
 }

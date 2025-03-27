@@ -18,6 +18,11 @@ const nextConfig = {
         hostname: 'https://jfswmbbkzetaurhviszl.supabase.co',
 
       },
+      {
+        protocol: 'https',
+        hostname: 'jfswmbbkzetaurhviszl.supabase.co'
+
+      },
     ],
   },
   async headers() {
