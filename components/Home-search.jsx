@@ -1,11 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Camera, Upload } from "lucide-react";
 import { Button } from "./ui/button";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import useFetch from "@/hooks/use-fetch";
+import { processImageSearch } from "@/actions/home";
 
 const HomeSearch = () => {
   const [serchterm, setserchterm] = useState("");
@@ -15,6 +17,14 @@ const HomeSearch = () => {
   const [isuploading, setisuploading] = useState(false);
 
   const router = useRouter();
+
+  const {
+    loading: processImageSearchloading,
+    fn: processImageSearchfn,
+    data: processImageSearchdata,
+    error: processImageSearcherror,
+  } = useFetch(processImageSearch);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!serchterm.trim()) {
@@ -29,7 +39,32 @@ const HomeSearch = () => {
       toast.error("Please upload an image");
       return;
     }
+    await processImageSearchfn(searchimage);
   };
+
+  useEffect(() => {
+    if (processImageSearcherror) {
+      toast.error(
+        `failed to Analyze car image ${
+          processImageSearcherror.message || "Unknown Error"
+        }`
+      );
+    }
+  }, [processImageSearcherror]);
+  useEffect(() => {
+    if (processImageSearchdata?.success) {
+      const params = new URLSearchParams();
+
+      if (processImageSearchdata.data.make)
+        params.set("make", processImageSearchdata.data.make);
+      if (processImageSearchdata.data.bodyType)
+        params.set("bodyType", processImageSearchdata.data.bodyType);
+      if (processImageSearchdata.data.color)
+        params.set("color", processImageSearchdata.data.color);
+
+      router.push(`/cars?${params.toString()}`);
+    }
+  }, [processImageSearchdata]);
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
     if (file) {
@@ -137,9 +172,13 @@ const HomeSearch = () => {
               <Button
                 type="submit"
                 className="w-full mt-2 cursor-pointer"
-                disabled={isuploading}
+                disabled={isuploading || processImageSearchloading}
               >
-                {isuploading ? "Uploading..." : "Search whith this image"}
+                {isuploading
+                  ? "Uploading..."
+                  : processImageSearchloading
+                  ? "Analyzing Image "
+                  : "Search with this image"}
               </Button>
             )}
           </form>

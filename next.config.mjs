@@ -1,27 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-
-  // experimental: {
-  //   serverComponentsHmrCache: false,
-
-  // },
+  experimental: {
+    serverComponentsHmrCache: false,
+  },
 
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'media.cars24.com',
-
+        protocol: "https",
+        hostname: "media.cars24.com",
       },
       {
-        protocol: 'https',
-        hostname: 'https://jfswmbbkzetaurhviszl.supabase.co',
-
+        protocol: "https",
+        hostname: "https://jfswmbbkzetaurhviszl.supabase.co",
       },
       {
-        protocol: 'https',
-        hostname: 'jfswmbbkzetaurhviszl.supabase.co'
-
+        protocol: "https",
+        hostname: "jfswmbbkzetaurhviszl.supabase.co",
       },
     ],
   },
@@ -32,12 +27,12 @@ const nextConfig = {
         headers: [
           {
             key: "Content-Security-Policy",
-            value: "frame-src 'self' https://iconcars.created.app;"
-          }
-        ]
-      }
-    ]
-  }
+            value: "frame-src 'self' https://iconcars.created.app;",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

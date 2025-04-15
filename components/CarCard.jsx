@@ -1,16 +1,52 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "./ui/card";
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { Heart } from "lucide-react";
+import { Heart, Loader2 } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { useRouter } from "next/navigation";
+import useFetch from "@/hooks/use-fetch";
+import { toggleSavedCar } from "@/actions/cars-listing";
+import { useAuth } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 const CarCard = ({ car }) => {
   const [saved, setsaved] = useState(car.wishlisted);
-  const handlesaved = async (e) => {};
+  const { isSignedIn } = useAuth();
+
   const router = useRouter();
+
+  const {
+    loading: toggleSavedCarloading,
+    fn: toggleSavedCarfn,
+    data: toggleSavedCardata,
+    error: toggleSavedCarerror,
+  } = useFetch(toggleSavedCar);
+
+  const handlesaved = async (e) => {
+    e.preventDefault();
+    if (!isSignedIn) {
+      toast.error("please sign to save cars");
+      router.push("/sign-in");
+      return;
+    }
+    if (toggleSavedCarloading) return;
+    await toggleSavedCarfn(car.id);
+  };
+
+  useEffect(() => {
+    if (toggleSavedCardata?.success && toggleSavedCardata.saved !== saved) {
+      setsaved(toggleSavedCardata.saved);
+      toast.success(toggleSavedCardata.message);
+    }
+  }, [toggleSavedCardata, setsaved]);
+  useEffect(() => {
+    if (toggleSavedCarerror) {
+      toast.error("Failed to update favorites");
+    }
+  }, [toggleSavedCarerror]);
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition group py-0">
       <div className="relative h-48">
@@ -37,7 +73,11 @@ const CarCard = ({ car }) => {
               : "text-gray-600 hover:text-gray-900"
           }`}
         >
-          <Heart className={saved ? "fill-current" : ""} size={20} />
+          {toggleSavedCarloading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Heart className={saved ? "fill-current" : ""} size={20} />
+          )}
         </Button>
       </div>
       <CardContent className="p-4">
