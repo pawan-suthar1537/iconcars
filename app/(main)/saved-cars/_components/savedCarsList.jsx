@@ -9,7 +9,7 @@ import CarCard from "@/components/CarCard";
 export function SavedCarsList({ initialData }) {
   if (!initialData?.data || initialData?.data.length === 0) {
     return (
-      <div className="min-h-[400px] flex flex-col items-center justify-center text-center p-8 border rounded-lg bg-gray-50">
+      <div className="min-h-[400px]  flex flex-col items-center justify-center text-center p-8  rounded-lg">
         <div className="bg-gray-100 p-4 rounded-full mb-4">
           <Heart className="h-8 w-8 text-gray-500" />
         </div>
