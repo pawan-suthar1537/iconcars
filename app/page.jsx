@@ -1,4 +1,3 @@
-
 import { getFeaturedCars } from "@/actions/home";
 import CarCard from "@/components/CarCard";
 import HomeSearch from "@/components/Home-search";
@@ -27,7 +26,7 @@ export default async function Home() {
               Find your Dream car with ICON CARS
             </h1>
             <p className="text-xl text-gray-500 mb-8 max-w-2xl mx-auto">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Revolutionizing car buying with an AI-powered
             </p>
           </div>
           {/* search */}
@@ -108,30 +107,39 @@ export default async function Home() {
               <div className="bg-blue-100 text-blue-700 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <Car className="h-8 w-8" />
               </div>
-              <h3 className="text-xl font-bold mb-2 ">Wide Selection</h3>
+              <h3 className="text-xl font-bold mb-2 ">
+                Extensive Car Selection
+              </h3>
               <p className="text-gray-600">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima,
-                quibusdam.
+                Explore a diverse range of vehicles from various manufacturers,
+                catering to all your needs and preferences. Find the perfect car
+                that matches your lifestyle and budget.
               </p>
             </div>
             <div className="text-center">
               <div className="bg-blue-100 text-blue-700 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <Calendar className="h-8 w-8" />
               </div>
-              <h3 className="text-xl font-bold mb-2 ">Wide Selection</h3>
+              <h3 className="text-xl font-bold mb-2 ">
+                Easy Test Drive Booking
+              </h3>
               <p className="text-gray-600">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima,
-                quibusdam.
+                Schedule test drives effortlessly at your convenience.
+                Experience the cars you're interested in firsthand before making
+                a decision. Our flexible booking system puts you in control.
               </p>
             </div>
             <div className="text-center">
               <div className="bg-blue-100 text-blue-700 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <Shield className="h-8 w-8" />
               </div>
-              <h3 className="text-xl font-bold mb-2 ">Wide Selection</h3>
+              <h3 className="text-xl font-bold mb-2 ">
+                Trusted Dealers & Secure Transactions
+              </h3>
               <p className="text-gray-600">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima,
-                quibusdam.
+                We partner with reputable dealers and implement secure
+                transaction protocols to ensure a safe and reliable car buying
+                experience. Your peace of mind is our top priority.
               </p>
             </div>
           </div>
