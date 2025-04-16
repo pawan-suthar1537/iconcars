@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 
 export async function getCarFilters() {
   try {
-  
+
     const makes = await db.car.findMany({
       where: { status: "AVAILABLE" },
       select: { make: true },
@@ -15,7 +15,7 @@ export async function getCarFilters() {
       orderBy: { make: "asc" },
     });
 
-    
+
     const bodyTypes = await db.car.findMany({
       where: { status: "AVAILABLE" },
       select: { bodyType: true },
@@ -23,7 +23,7 @@ export async function getCarFilters() {
       orderBy: { bodyType: "asc" },
     });
 
-   
+
     const fuelTypes = await db.car.findMany({
       where: { status: "AVAILABLE" },
       select: { fuelType: true },
@@ -31,7 +31,7 @@ export async function getCarFilters() {
       orderBy: { fuelType: "asc" },
     });
 
-   
+
     const transmissions = await db.car.findMany({
       where: { status: "AVAILABLE" },
       select: { transmission: true },
@@ -39,7 +39,7 @@ export async function getCarFilters() {
       orderBy: { transmission: "asc" },
     });
 
-    
+
     const priceAggregations = await db.car.aggregate({
       where: { status: "AVAILABLE" },
       _min: { price: true },
@@ -273,25 +273,27 @@ export async function getCarById(carId) {
       wishlisted = !!savedCar;
     }
 
-    const existingTestDrive = await db.testDriveBooking.findFirst({
-      where: {
-        carId,
-        userId: dbUser.id,
-        status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
     let userTestDrive = null;
 
-    if (existingTestDrive) {
-      userTestDrive = {
-        id: existingTestDrive.id,
-        status: existingTestDrive.status,
-        bookingDate: existingTestDrive.bookingDate.toISOString(),
-      };
+    if (dbUser) {
+      const existingTestDrive = await db.testDriveBooking.findFirst({
+        where: {
+          carId,
+          userId: dbUser.id,
+          status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      if (existingTestDrive) {
+        userTestDrive = {
+          id: existingTestDrive.id,
+          status: existingTestDrive.status,
+          bookingDate: existingTestDrive.bookingDate.toISOString(),
+        };
+      }
     }
 
     const dealership = await db.dealershipInfo.findFirst({
@@ -308,23 +310,24 @@ export async function getCarById(carId) {
           userTestDrive,
           dealership: dealership
             ? {
-                ...dealership,
-                createdAt: dealership.createdAt.toISOString(),
-                updatedAt: dealership.updatedAt.toISOString(),
-                workingHours: dealership.workingHours.map((hour) => ({
-                  ...hour,
-                  createdAt: hour.createdAt.toISOString(),
-                  updatedAt: hour.updatedAt.toISOString(),
-                })),
-              }
+              ...dealership,
+              createdAt: dealership.createdAt.toISOString(),
+              updatedAt: dealership.updatedAt.toISOString(),
+              workingHours: dealership.workingHours.map((hour) => ({
+                ...hour,
+                createdAt: hour.createdAt.toISOString(),
+                updatedAt: hour.updatedAt.toISOString(),
+              })),
+            }
             : null,
         },
       },
     };
   } catch (error) {
-    throw new Error("Error fetching car details:" + error.message);
+    throw new Error("Error fetching car details: " + error.message);
   }
 }
+
 
 export async function getSavedCars() {
   try {
