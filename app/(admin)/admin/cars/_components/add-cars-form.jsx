@@ -32,7 +32,7 @@ import useFetch from "@/hooks/use-fetch";
 import { Addcar, ProcesscarwithAI } from "@/actions/cars";
 import { useRouter } from "next/navigation";
 
-// Predefined options
+
 const fuelTypes = ["Petrol", "Diesel", "Electric", "Hybrid", "Plug-in Hybrid"];
 const transmissions = ["Automatic", "Manual", "Semi-Automatic"];
 const bodyTypes = [
@@ -63,7 +63,7 @@ const Addcarform = () => {
     error: ProcesscarwithAIError,
   } = useFetch(ProcesscarwithAI);
 
-  //?
+ 
   const onMultipleImagesDrop = (acceptedFiles) => {
     const validfiles = acceptedFiles.filter((file) => {
       if (file.size > 5 * 1024 * 1024) {
@@ -93,7 +93,7 @@ const Addcarform = () => {
     });
   };
 
-  //   for manulal
+
   const { getRootProps: getMultiRootProps, getInputProps: getMultiInputProps } =
     useDropzone({
       onDrop: onMultipleImagesDrop,
@@ -103,7 +103,7 @@ const Addcarform = () => {
       multiple: true,
     });
 
-  //  for AI
+  
 
   const onAIDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];

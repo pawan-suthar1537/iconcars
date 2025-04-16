@@ -38,10 +38,10 @@ export async function getFeaturedCars(limit = 3) {
 
 export async function processImageSearch(file) {
   try {
-    // Get request data for ArcJet
+   
     const req = await request();
 
-    // Check rate limit
+  
     const decision = await aj.protect(req, {
       requested: 1,
     });

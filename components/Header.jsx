@@ -14,7 +14,7 @@ import { CheckUser } from "@/lib/CheckUser";
 
 const Header = async ({ IsAdminPage = false }) => {
   const user = await CheckUser();
-  console.log("user in header", user);
+
   const isAdmin = user?.role === "ADMIN";
   return (
     <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b">

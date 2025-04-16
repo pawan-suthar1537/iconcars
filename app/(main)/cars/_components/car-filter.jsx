@@ -25,7 +25,7 @@ const CarFilters = ({ filters }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  // Get current filter values from searchParams
+
   const currentMake = searchParams.get("make") || "";
   const currentBodyType = searchParams.get("bodyType") || "";
   const currentFuelType = searchParams.get("fuelType") || "";
@@ -38,7 +38,7 @@ const CarFilters = ({ filters }) => {
     : filters.priceRange.max;
   const currentSortBy = searchParams.get("sortBy") || "newest";
 
-  // Local state for filters
+ 
   const [make, setMake] = useState(currentMake);
   const [bodyType, setBodyType] = useState(currentBodyType);
   const [fuelType, setFuelType] = useState(currentFuelType);
@@ -87,7 +87,7 @@ const CarFilters = ({ filters }) => {
       params.set("maxPrice", priceRange[1].toString());
     if (sortBy !== "newest") params.set("sortBy", sortBy);
 
-    // Preserve search and page params if they exist
+   
     const search = searchParams.get("search");
     const page = searchParams.get("page");
     if (search) params.set("search", search);
@@ -111,7 +111,7 @@ const CarFilters = ({ filters }) => {
     filters.priceRange.max,
   ]);
 
-  // Handle filter changes
+ 
   const handleFilterChange = (filterName, value) => {
     switch (filterName) {
       case "make":
@@ -132,12 +132,11 @@ const CarFilters = ({ filters }) => {
     }
   };
 
-  // Handle clearing specific filter
+
   const handleClearFilter = (filterName) => {
     handleFilterChange(filterName, "");
   };
 
-  // Clear all filters
   const clearFilters = () => {
     setMake("");
     setBodyType("");
@@ -146,7 +145,7 @@ const CarFilters = ({ filters }) => {
     setPriceRange([filters.priceRange.min, filters.priceRange.max]);
     setSortBy("newest");
 
-    // Keep search term if exists
+   
     const params = new URLSearchParams();
     const search = searchParams.get("search");
     if (search) params.set("search", search);
@@ -158,7 +157,7 @@ const CarFilters = ({ filters }) => {
     setIsSheetOpen(false);
   };
 
-  // Current filters object for the controls component
+
   const currentFilters = {
     make,
     bodyType,

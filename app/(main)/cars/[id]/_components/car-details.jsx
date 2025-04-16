@@ -46,7 +46,7 @@ export function CarDetails({ car, testDriveInfo }) {
     error: toggleError,
   } = useFetch(toggleSavedCar);
 
-  // Handle toggle result with useEffect
+ 
   useEffect(() => {
     if (toggleResult?.success) {
       setIsWishlisted(toggleResult.saved);
@@ -54,14 +54,14 @@ export function CarDetails({ car, testDriveInfo }) {
     }
   }, [toggleResult]);
 
-  // Handle errors with useEffect
+
   useEffect(() => {
     if (toggleError) {
       toast.error("Failed to update favorites");
     }
   }, [toggleError]);
 
-  // Handle save car
+  
   const handleSaveCar = async () => {
     if (!isSignedIn) {
       toast.error("Please sign in to save cars");
@@ -74,7 +74,7 @@ export function CarDetails({ car, testDriveInfo }) {
     await toggleSavedCarFn(car.id);
   };
 
-  // Handle share
+ 
   const handleShare = () => {
     if (navigator.share) {
       navigator
@@ -97,7 +97,7 @@ export function CarDetails({ car, testDriveInfo }) {
     toast.success("Link copied to clipboard");
   };
 
-  // Handle book test drive
+ 
   const handleBookTestDrive = () => {
     if (!isSignedIn) {
       toast.error("Please sign in to book a test drive");

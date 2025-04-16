@@ -82,19 +82,19 @@ export function CarListings() {
     setCurrentPage(pageNum);
   };
 
-  // Generate pagination URL
+ 
   const getPaginationUrl = (pageNum) => {
     const params = new URLSearchParams(searchParams);
     params.set("page", pageNum.toString());
     return `?${params.toString()}`;
   };
 
-  // Show loading state
+ 
   if (loading && !result) {
     return <CarListingsLoading />;
   }
 
-  // Handle error
+ 
   if (error || (result && !result.success)) {
     return (
       <Alert variant="destructive">
@@ -107,14 +107,14 @@ export function CarListings() {
     );
   }
 
-  // If no results yet, return empty placeholder
+ 
   if (!result || !result.data) {
     return null;
   }
 
   const { data: cars, pagination } = result;
 
-  // No results
+ 
   if (cars.length === 0) {
     return (
       <div className="min-h-[400px] flex flex-col items-center justify-center text-center p-8 border rounded-lg bg-gray-50">
@@ -133,16 +133,15 @@ export function CarListings() {
     );
   }
 
-  // Generate pagination items
+
   const paginationItems = [];
 
-  // Calculate which page numbers to show (first, last, and around current page)
+ 
   const visiblePageNumbers = [];
 
-  // Always show page 1
+ 
   visiblePageNumbers.push(1);
 
-  // Show pages around current page
   for (
     let i = Math.max(2, page - 1);
     i <= Math.min(pagination.pages - 1, page + 1);

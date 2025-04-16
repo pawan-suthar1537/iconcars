@@ -96,7 +96,7 @@ const CarsList = () => {
     getallcarsfn(search);
   }, [search]);
 
-  // Get status badge color
+ 
   const getStatusBadge = (status) => {
     switch (status) {
       case "AVAILABLE":
@@ -124,12 +124,7 @@ const CarsList = () => {
 
   const handlesearchsubmit = (e) => {
     e.preventDefault();
-    // const searchValue = e.target[0].value;
-    // if (searchValue) {
-    //   router.push(`/admin/cars?search=${searchValue}`);
-    // } else {
-    //   router.push("/admin/cars");
-    // }
+    
     getallcarsfn(search);
   };
 

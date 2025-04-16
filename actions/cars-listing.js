@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 
 export async function getCarFilters() {
   try {
-    // Get unique makes
+  
     const makes = await db.car.findMany({
       where: { status: "AVAILABLE" },
       select: { make: true },
@@ -15,7 +15,7 @@ export async function getCarFilters() {
       orderBy: { make: "asc" },
     });
 
-    // Get unique body types
+    
     const bodyTypes = await db.car.findMany({
       where: { status: "AVAILABLE" },
       select: { bodyType: true },
@@ -23,7 +23,7 @@ export async function getCarFilters() {
       orderBy: { bodyType: "asc" },
     });
 
-    // Get unique fuel types
+   
     const fuelTypes = await db.car.findMany({
       where: { status: "AVAILABLE" },
       select: { fuelType: true },
@@ -31,7 +31,7 @@ export async function getCarFilters() {
       orderBy: { fuelType: "asc" },
     });
 
-    // Get unique transmissions
+   
     const transmissions = await db.car.findMany({
       where: { status: "AVAILABLE" },
       select: { transmission: true },
@@ -39,7 +39,7 @@ export async function getCarFilters() {
       orderBy: { transmission: "asc" },
     });
 
-    // Get min and max prices using Prisma aggregations
+    
     const priceAggregations = await db.car.aggregate({
       where: { status: "AVAILABLE" },
       _min: { price: true },
@@ -294,7 +294,6 @@ export async function getCarById(carId) {
       };
     }
 
-    // Get dealership info for test drive availability
     const dealership = await db.dealershipInfo.findFirst({
       include: {
         workingHours: true,
