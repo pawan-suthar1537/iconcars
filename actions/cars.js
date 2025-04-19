@@ -18,7 +18,7 @@ async function convertfilebs64(file) {
 export async function ProcesscarwithAI(file) {
   try {
     if (!process.env.GEMENI_API_KEY) {
-      throw new Error("GEMINI_API_KEY is not set");
+      throw new Error("GEMENI_API_KEY is not set");
     }
 
     const genai = new GoogleGenerativeAI(process.env.GEMENI_API_KEY);

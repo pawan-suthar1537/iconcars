@@ -38,7 +38,11 @@ export async function getFeaturedCars(limit = 3) {
 
 export async function processImageSearch(file) {
   console.log("Processing car image with AI file", file);
+  console.log("processssss", process.env);
   try {
+    if (!process.env.GEMENI_API_KEY) {
+      throw new Error("Gemini API key is not configured");
+    }
     const req = await request();
 
     const decision = await aj.protect(req, {
@@ -62,11 +66,7 @@ export async function processImageSearch(file) {
       throw new Error("Request blocked");
     }
 
-    if (!process.env.GEMINI_API_KEY) {
-      throw new Error("Gemini API key is not configured");
-    }
-
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const genAI = new GoogleGenerativeAI(process.env.GEMENI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const base64Image = await fileToBase64(file);
