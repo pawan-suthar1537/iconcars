@@ -16,9 +16,7 @@ async function convertfilebs64(file) {
 }
 
 export async function ProcesscarwithAI(file) {
- 
   try {
-    
     if (!process.env.GEMENI_API_KEY) {
       throw new Error("GEMINI_API_KEY is not set");
     }
@@ -81,9 +79,8 @@ export async function ProcesscarwithAI(file) {
     const result = await model.generateContent([imagePart, Prompt]);
     const response = await result.response;
     const text = await response.text();
-    
+
     const cleantext = text.replace(/```json\s*|```|\bjson\b\s*/g, "").trim();
-    
 
     try {
       const car_details = JSON.parse(cleantext);
@@ -284,6 +281,7 @@ export async function DeleteCar(carId) {
     try {
       const cookieStore = await cookies();
       const supabase = createClient(cookieStore);
+      let storageError = null;
 
       const filepaths = car.images
         .map((imgurl) => {
@@ -297,9 +295,10 @@ export async function DeleteCar(carId) {
         const { error } = await supabase.storage
           .from("iconcars")
           .remove(filepaths);
+        storageError = error;
       }
-      if (error) {
-        console.error("Error deleting images from Supabase:", error);
+      if (storageError) {
+        console.error("Error deleting images from Supabase:", storageError);
       }
     } catch (storagerror) {
       console.error("Error deleting car:", storagerror);
