@@ -17,7 +17,7 @@ const Header = async ({ IsAdminPage = false }) => {
 
   const isAdmin = user?.role === "ADMIN";
   return (
-    <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b">
+    <header className="fixed top-0 w-full bg-white backdrop-blur-md z-50 border-b">
       <nav className="mx-auto px-4 py-4 flex items-center justify-between">
         <Link href={IsAdminPage ? "/admin" : "/"} className="flex">
           <Image
@@ -25,11 +25,12 @@ const Header = async ({ IsAdminPage = false }) => {
             alt="logo"
             width={200}
             height={40}
-            className="h-12 w-auto object-contain  opacity-90"
+            className="h-11  w-auto object-contain  opacity-90"
+            priority
           />
 
           {IsAdminPage && (
-            <span className="text-xs font-extralight">Admin</span>
+            <span className="text-xs font-extralight mt-4 lg:mt-0">Admin</span>
           )}
         </Link>
 
@@ -41,7 +42,7 @@ const Header = async ({ IsAdminPage = false }) => {
                 className=" flex items-center gap-2 cursor-pointer"
               >
                 <ArrowLeft size={18} />
-                <span>Back to App</span>
+                {/* <span>main web</span> */}
               </Button>
             </Link>
           ) : (

@@ -37,11 +37,10 @@ export async function getFeaturedCars(limit = 3) {
 }
 
 export async function processImageSearch(file) {
+  console.log("Processing car image with AI file", file);
   try {
-   
     const req = await request();
 
-  
     const decision = await aj.protect(req, {
       requested: 1,
     });

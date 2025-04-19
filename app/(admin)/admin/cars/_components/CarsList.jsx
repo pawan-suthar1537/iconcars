@@ -96,7 +96,6 @@ const CarsList = () => {
     getallcarsfn(search);
   }, [search]);
 
- 
   const getStatusBadge = (status) => {
     switch (status) {
       case "AVAILABLE":
@@ -124,7 +123,7 @@ const CarsList = () => {
 
   const handlesearchsubmit = (e) => {
     e.preventDefault();
-    
+
     getallcarsfn(search);
   };
 
@@ -156,7 +155,7 @@ const CarsList = () => {
               onChange={(e) => setsearch(e.target.value)}
               type="search"
               placeholder="Search car"
-              className="pl-9 w-full sm:w-60"
+              className="pl-9 w-full sm:w-80"
             />
           </div>
         </form>
@@ -184,7 +183,6 @@ const CarsList = () => {
                 </TableHeader>
                 <TableBody>
                   {getallcarsdata.data.map((car) => {
-                    console.log("car in carslist", car);
                     return (
                       <TableRow key={car.id}>
                         <TableCell className="w-1- h-10 rounded-md overflow-hidden">

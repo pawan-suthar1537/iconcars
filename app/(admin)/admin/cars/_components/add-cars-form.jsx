@@ -32,7 +32,6 @@ import useFetch from "@/hooks/use-fetch";
 import { Addcar, ProcesscarwithAI } from "@/actions/cars";
 import { useRouter } from "next/navigation";
 
-
 const fuelTypes = ["Petrol", "Diesel", "Electric", "Hybrid", "Plug-in Hybrid"];
 const transmissions = ["Automatic", "Manual", "Semi-Automatic"];
 const bodyTypes = [
@@ -54,8 +53,6 @@ const Addcarform = () => {
   const [imagePreview, setimagePreview] = useState(null);
   const [UploadAIImage, setUploadAIImage] = useState(null);
 
-  console.log("UploadAIImage", UploadAIImage);
-
   const {
     loading: ProcesscarwithAIloading,
     fn: ProcesscarwithAIfn,
@@ -63,7 +60,6 @@ const Addcarform = () => {
     error: ProcesscarwithAIError,
   } = useFetch(ProcesscarwithAI);
 
- 
   const onMultipleImagesDrop = (acceptedFiles) => {
     const validfiles = acceptedFiles.filter((file) => {
       if (file.size > 5 * 1024 * 1024) {
@@ -93,7 +89,6 @@ const Addcarform = () => {
     });
   };
 
-
   const { getRootProps: getMultiRootProps, getInputProps: getMultiInputProps } =
     useDropzone({
       onDrop: onMultipleImagesDrop,
@@ -102,8 +97,6 @@ const Addcarform = () => {
       },
       multiple: true,
     });
-
-  
 
   const onAIDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
