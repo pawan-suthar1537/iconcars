@@ -31,7 +31,7 @@ const HomeSearch = () => {
       toast.error("Please enter a search term");
       return;
     }
-    router.push(`/cars?search/${encodeURIComponent(serchterm)}`);
+    router.push(`/cars?search=${encodeURIComponent(serchterm)}`);
   };
   const handleImageSearch = async (e) => {
     e.preventDefault();
