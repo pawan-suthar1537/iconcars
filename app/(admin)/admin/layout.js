@@ -11,6 +11,8 @@ import Sidebar from './_components/Sidebar'
 
 
 
+export const dynamic = "force-dynamic";
+
 const AdminLayout = async ({ children }) => {
     const admin = await getAdmin()
 
