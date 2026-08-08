@@ -23,7 +23,7 @@ export async function ProcesscarwithAI(file) {
 
     const genai = new GoogleGenerativeAI(process.env.GEMENI_API_KEY);
     const model = await genai.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
     });
 
     const base64 = await convertfilebs64(file);
@@ -155,7 +155,7 @@ export async function Addcar({ carData, images }) {
       const imagebuffer = Buffer.from(base64, "base64");
 
       const mimetype = convertfilebs64.match(/data:image\/([a-zA-Z0-9]+);/);
-      const filetype = mimetype ? mimetype[1] : ".png";
+      const filetype = mimetype ? mimetype[1] : "png";
 
       const filename = `image-${Date.now()}-${i}.${filetype}`;
       const filepath = `${folderpath}/${filename}`;
@@ -163,7 +163,7 @@ export async function Addcar({ carData, images }) {
       const { data, error } = await supabase.storage
         .from("iconcars")
         .upload(filepath, imagebuffer, {
-          contentType: `image/${mimetype}`,
+          contentType: `image/${mimetype ? mimetype[1] : filetype}`,
         });
 
       if (error) {
