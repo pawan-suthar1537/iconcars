@@ -18,6 +18,15 @@ const nextConfig = {
         protocol: "https",
         hostname: "jfswmbbkzetaurhviszl.supabase.co",
       },
+      {
+        protocol: "https",
+        hostname: "hokibxeixbzhgvppqmau.supabase.co",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+
     ],
   },
   async headers() {
